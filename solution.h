@@ -1,5 +1,3 @@
-#include <bits/stdc++.h>
-
 
 struct answer{
     int l;
@@ -32,6 +30,7 @@ public:
             }
         return ans;            
     }
+    
     answer maxSubArrayDPN2(std::vector<int>& nums){
         answer ans;
         ans.sum=-INT_MAX;    
@@ -79,20 +78,43 @@ public:
         return ans;
     }
 
-    // answer maxSubArrayRecursive(vector<int>& nums) {
-    //     answer ans;
-    //     ans.sum=nums[0];
-    //     maxSub(nums,nums.size()-1, ans);
-    //     return ans;
-    // }
-    // int maxSub(vector<int>& nums, int n,answer ans) {
-    //     if (n == 0)
-    //         return nums[n];
-    //     auto old = maxSub(nums, n - 1,ans);
-    //     auto myVal = max(nums[n], nums[n] + old);
-    //     ans.sum = max(ans.sum, myVal);
-    //     return myVal;
-    // } 
+    answer maxSubArrayMemorization(std::vector<int>& nums) {    
+        std::vector<std::vector<int>> dp(2, std::vector<int>(size(nums), -1));
+        answer ans;
+        ans.l=-1;ans.r=-1;
+        ans.sum=solve(nums, 0, false, dp);
+        for (int i = 0; i < dp[0].size(); i++)
+        {
+            if(dp[0][i]==dp[1][i])
+                ans.r=i;
+        }
+        for (int j = dp[0].size(); j >0; j--)
+        {
+            if(dp[0][j]==dp[1][j])
+                ans.l=j;
+        }
+
+        // int row=0,col=0;
+        // row=dp.size();
+        // if(row) col=dp[0].size();
+        // for(int i=0;i<row;i++){
+        //     for(int j=0;j<col;j++){
+        //         if(j) putchar(' ');
+        //         std::cout<<dp[i][j];
+        //     }
+        //     putchar('\n');
+        // } 
+
+        return ans;
+    }
+    int solve(std::vector<int>& A, int i, bool mustPick, std::vector<std::vector<int>>& dp) {
+        if(i >= size(A)) return mustPick ? 0 : -1e5;
+        if(dp[mustPick][i] != -1) return dp[mustPick][i];
+        if(mustPick)
+            return dp[mustPick][i] = std::max(0, A[i] + solve(A, i+1, true, dp));
+        return dp[mustPick][i] = std::max(solve(A, i+1, false, dp), A[i] + solve(A, i+1, true, dp));
+    }
+    
     answerMatrix maxSubmatrixSumN6(std::vector<std::vector<int> > matrix)
     {
         answerMatrix ans;
@@ -142,6 +164,7 @@ public:
         }
         return ans;
     }
+    
     answerMatrix maxSubmatrixSumN3(std::vector<std::vector<int> > matrix)
     {
         answer ans;
@@ -173,6 +196,7 @@ public:
         }
         return ans2;
     }    
+    
     answerMatrix maxSubmatrixSumN4(std::vector<std::vector<int> > matrix)
     {
         answer ans;
